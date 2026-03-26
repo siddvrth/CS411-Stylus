@@ -60,6 +60,33 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Project Stack (Frontend-focused)
+
+The project is structured to match the following stack (frontend only for now):
+
+- Frontend: React (JavaScript)
+	- Reason: Supports fast, interactive UI development for onboarding, image capture/upload, and results display. Component-based structure improves maintainability.
+- Backend: Node.js + Express (placeholder - backend APIs to be integrated later)
+- Machine Learning: Python (Flask/FastAPI) (external ML services; integrated via JSON APIs)
+- Image Processing: OpenCV (handled by ML/image service)
+- Database: PostgreSQL (backend service)
+- Authentication: Google OAuth + JWT (handled server-side; frontend will use OAuth flows and store JWTs securely)
+- API Communication: JSON over HTTPS
+- Version Control: GitHub
+- Containerization: Docker (Dockerfile included for frontend)
+- Testing: Jest (Frontend) — `jest.config.cjs` included; run with `npm run test:jest` (install jest deps first)
+- Deployment: Vercel (recommended for frontend)
+
+Notes:
+- This repository currently contains the React frontend. Backend and ML services are expected to run as separate services and communicate with this frontend over secure JSON APIs.
+- To run frontend tests with Jest you may need to install additional dev dependencies:
+
+```bash
+npm install --save-dev jest jest-environment-jsdom @testing-library/jest-dom
+```
+
+- A `Dockerfile` and `.dockerignore` were added to build and serve the frontend via nginx for staging/production.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
