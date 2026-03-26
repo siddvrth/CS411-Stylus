@@ -1,0 +1,45 @@
+import { Link, useLocation } from "react-router-dom";
+import { Camera, Upload, History, Settings, Home } from "lucide-react";
+
+const navItems = [
+  { to: "/", label: "Home", icon: Home },
+  { to: "/onboarding", label: "Preferences", icon: Settings },
+  { to: "/capture", label: "Capture", icon: Camera },
+  { to: "/item-details", label: "Item Details", icon: Upload },
+  { to: "/results", label: "Results", icon: History },
+];
+
+const Navbar = () => {
+  const location = useLocation();
+
+  return (
+    <nav className="w-full border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
+        <Link to="/" className="text-2xl font-bold text-primary tracking-wide">
+          Stylus
+        </Link>
+        <div className="flex items-center gap-1">
+          {navItems.map(({ to, label, icon: Icon }) => {
+            const active = location.pathname === to;
+            return (
+              <Link
+                key={to}
+                to={to}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm transition-colors ${
+                  active
+                    ? "bg-primary/15 text-primary font-semibold"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span className="hidden md:inline">{label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;

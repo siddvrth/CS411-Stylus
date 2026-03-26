@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+
+    --primary: 316 25% 72%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 75%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 25% 93%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 210 50% 90%;
+    --accent-foreground: 0 0% 25%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 316 25% 72%;
+
+    --radius: 0.75rem;
+
+    --dark-gray: 0 0% 38%;
+    --dark-gray-foreground: 0 0% 100%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 316 25% 72%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 210 50% 90%;
+    --sidebar-accent-foreground: 0 0% 25%;
+    --sidebar-border: 0 0% 85%;
+    --sidebar-ring: 316 25% 72%;
+  }
+
+  .dark {
+    --background: 0 0% 12%;
+    --foreground: 0 0% 90%;
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 90%;
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 90%;
+    --primary: 316 25% 72%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 45%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 210 30% 25%;
+    --accent-foreground: 210 50% 90%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 316 25% 72%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Architects Daughter', cursive;
+  }
+}
