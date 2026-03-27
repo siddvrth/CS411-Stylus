@@ -107,7 +107,7 @@ const ProfileScreen = () => {
             <User className="w-8 h-8 text-primary" />
           </div>
           <div>
-            <h1 className="text-4xl font-bold text-foreground">Your Profile</h1>
+            <h1 className="text-4xl font-bold text-foreground">Preferences</h1>
             <p className="text-muted-foreground text-base">
               Manage your style preferences and budget.
             </p>

@@ -1,13 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Camera, Upload, History, Settings, Home, User } from "lucide-react";
+import { Camera, Upload, History, Settings, Home } from "lucide-react";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
-  { to: "/onboarding", label: "Preferences", icon: Settings },
   { to: "/capture", label: "Capture", icon: Camera },
   { to: "/item-details", label: "Item Details", icon: Upload },
   { to: "/results", label: "Results", icon: History },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/preferences", label: "Preferences", icon: Settings },
 ];
 
 const Navbar = () => {

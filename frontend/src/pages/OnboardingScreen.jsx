@@ -21,6 +21,7 @@ const OnboardingScreen = () => {
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const toggleStyle = (tag) => {
     setSelectedStyles((prev) =>
@@ -50,6 +51,16 @@ const OnboardingScreen = () => {
   };
 
   const saveProfile = async (isSkipped) => {
+    if (!isSkipped) {
+      const newErrors = {};
+      if (!preferredSize) newErrors.preferredSize = true;
+      if (!fitPreference) newErrors.fitPreference = true;
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+    }
+    setErrors({});
     setSaving(true);
     try {
       const payload = isSkipped
@@ -63,13 +74,19 @@ const OnboardingScreen = () => {
             budgetMax: budgetMax ? Number(budgetMax) : null,
           };
 
-      await fetch("/api/profile", {
+      const res = await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      navigate("/capture");
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        alert(err?.message || "Failed to save profile. Is the backend running?");
+        return;
+      }
+
+      navigate("/");
     } finally {
       setSaving(false);
     }
@@ -87,9 +104,9 @@ const OnboardingScreen = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Preferred Size */}
               <div className="space-y-2">
-                <Label className="text-base text-foreground">Preferred Size</Label>
-                <Select value={preferredSize} onValueChange={setPreferredSize}>
-                  <SelectTrigger className="w-full bg-background border-border">
+                <Label className="text-base text-foreground">Preferred Size <span className="text-destructive">*</span></Label>
+                <Select value={preferredSize} onValueChange={(v) => { setPreferredSize(v); setErrors((e) => ({ ...e, preferredSize: false })); }}>
+                  <SelectTrigger className={`w-full bg-background ${errors.preferredSize ? "border-destructive border-2" : "border-border"}`}>
                     <SelectValue placeholder="Select size..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -102,9 +119,9 @@ const OnboardingScreen = () => {
 
               {/* Fit Preference */}
               <div className="space-y-2">
-                <Label className="text-base text-foreground">Fit Preference</Label>
-                <Select value={fitPreference} onValueChange={setFitPreference}>
-                  <SelectTrigger className="w-full bg-background border-border">
+                <Label className="text-base text-foreground">Fit Preference <span className="text-destructive">*</span></Label>
+                <Select value={fitPreference} onValueChange={(v) => { setFitPreference(v); setErrors((e) => ({ ...e, fitPreference: false })); }}>
+                  <SelectTrigger className={`w-full bg-background ${errors.fitPreference ? "border-destructive border-2" : "border-border"}`}>
                     <SelectValue placeholder="Select fit..." />
                   </SelectTrigger>
                   <SelectContent>

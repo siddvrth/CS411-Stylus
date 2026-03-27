@@ -25,7 +25,7 @@ const App = () => (
           <Route path="/capture" element={<CaptureScreen />} />
           <Route path="/item-details" element={<ItemDetailsScreen />} />
           <Route path="/results" element={<ResultsScreen />} />
-          <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/preferences" element={<ProfileScreen />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
