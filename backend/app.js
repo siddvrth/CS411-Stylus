@@ -1,10 +1,11 @@
 import express from "express";
-import { createProfileHandler } from "./profile-controller.js";
+import { createProfileHandler, getProfileHandler } from "./profile-controller.js";
 
 const app = express();
 
 app.use(express.json());
 
+app.get("/api/profile", getProfileHandler);
 app.post("/api/profile", createProfileHandler);
 
 app.use((error, req, res, next) => {

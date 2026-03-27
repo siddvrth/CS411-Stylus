@@ -9,6 +9,7 @@ import OnboardingScreen from "./pages/OnboardingScreen";
 import CaptureScreen from "./pages/CaptureScreen";
 import ItemDetailsScreen from "./pages/ItemDetailsScreen";
 import ResultsScreen from "./pages/ResultsScreen";
+import ProfileScreen from "./pages/ProfileScreen";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/capture" element={<CaptureScreen />} />
           <Route path="/item-details" element={<ItemDetailsScreen />} />
           <Route path="/results" element={<ResultsScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

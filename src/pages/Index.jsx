@@ -29,32 +29,32 @@ const Index = () => {
   return (
     <PageLayout>
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 py-16 text-center">
-        <h1 className="text-5xl font-bold text-foreground mb-4">
+      <section className="max-w-6xl mx-auto px-8 py-20 text-center">
+        <h1 className="text-6xl font-bold text-foreground mb-6">
           Will you keep it or return it?
         </h1>
-        <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8">
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
           Stylus helps you predict whether a clothing item is worth keeping — saving you money, time, and reducing waste.
         </p>
         <Link to="/onboarding">
-          <Button className="bg-primary text-primary-foreground text-lg px-8 py-6 gap-2">
-            Get Started <ArrowRight className="w-5 h-5" />
+          <Button className="bg-primary text-primary-foreground text-xl px-10 py-7 gap-3">
+            Get Started <ArrowRight className="w-6 h-6" />
           </Button>
         </Link>
       </section>
 
       {/* Feature cards */}
-      <section className="max-w-6xl mx-auto px-6 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="max-w-6xl mx-auto px-8 pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map(({ to, icon: Icon, title, desc }) => (
             <Link key={to} to={to} className="group">
               <Card className="h-full border-border bg-card hover:shadow-md transition-shadow">
-                <CardContent className="pt-8 pb-6 text-center space-y-3">
-                  <div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center mx-auto">
-                    <Icon className="w-7 h-7 text-primary" />
+                <CardContent className="pt-10 pb-8 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center mx-auto">
+                    <Icon className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground">{title}</h3>
-                  <p className="text-sm text-muted-foreground">{desc}</p>
+                  <h3 className="text-xl font-semibold text-foreground">{title}</h3>
+                  <p className="text-base text-muted-foreground">{desc}</p>
                 </CardContent>
               </Card>
             </Link>

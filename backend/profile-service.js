@@ -32,6 +32,12 @@ export function createProfile({ profile, createdWith }) {
   };
 }
 
+export function getLatestProfile() {
+  if (profiles.size === 0) return null;
+  const entries = [...profiles.values()];
+  return entries[entries.length - 1];
+}
+
 export function resetProfileStore() {
   profiles.clear();
   nextProfileId = 1;
