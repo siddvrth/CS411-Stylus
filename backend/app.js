@@ -1,12 +1,15 @@
 import express from "express";
 import { createProfileHandler, getProfileHandler } from "./profile-controller.js";
+import {uploadItemHandler, confirmItemHandler, predictReturnRiskHandler} from "./item-controller.js";
 
 const app = express();
 
 app.use(express.json());
-
 app.get("/api/profile", getProfileHandler);
 app.post("/api/profile", createProfileHandler);
+app.post("/api/item/upload", uploadItemHandler);
+app.post("/api/item/confirm", confirmItemHandler);
+app.post("/api/item/predict", predictReturnRiskHandler);
 
 app.use((error, req, res, next) => {
   if (error instanceof SyntaxError && "body" in error) {
