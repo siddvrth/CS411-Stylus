@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import PageLayout from "@/components/PageLayout";
+import { resetItemFlow } from "@/lib/item-flow";
 
 const styleOptions = ["Casual", "Formal", "Streetwear", "Athleisure", "Bohemian", "Minimalist", "Vintage"];
 
@@ -86,6 +87,7 @@ const OnboardingScreen = () => {
         return;
       }
 
+      resetItemFlow();
       navigate("/");
     } finally {
       setSaving(false);

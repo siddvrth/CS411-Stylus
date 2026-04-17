@@ -1,60 +1,79 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Save, RefreshCw, ThumbsUp, ThumbsDown, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import PageLayout from "@/components/PageLayout";
+import { getLastPrediction, resetItemFlow } from "@/lib/item-flow";
 
 const ResultsScreen = () => {
+  const navigate = useNavigate();
+  const [prediction, setPrediction] = useState(null);
+
+  useEffect(() => {
+    const p = getLastPrediction();
+    if (!p) navigate("/capture", { replace: true });
+    else setPrediction(p);
+  }, [navigate]);
+
+  if (!prediction) return null;
+
+  const { riskLevel, probability, confidence, keyDrivers } = prediction;
+  const wasteScore = Math.min(10, Math.max(1, Math.round(probability / 10)));
+
   return (
     <PageLayout>
       <div className="max-w-5xl mx-auto px-8 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-3">Results</h1>
-          <p className="text-lg text-muted-foreground">Here's our prediction for this item.</p>
+          <p className="text-lg text-muted-foreground">Here is our prediction for this item.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left column */}
           <div className="space-y-6">
-            {/* Risk Level */}
             <Card className="border-border bg-card">
               <CardContent className="pt-6 text-center space-y-4">
                 <h2 className="text-xl text-foreground">Return Risk Level</h2>
-                <Badge className="text-3xl px-8 py-3 bg-primary text-primary-foreground">
-                  Medium
-                </Badge>
-                <Progress value={55} className="h-4" />
-                <p className="text-base text-muted-foreground">55% likelihood of return</p>
+                <Badge className="text-3xl px-8 py-3 bg-primary text-primary-foreground">{riskLevel}</Badge>
+                <Progress value={probability} className="h-4" />
+                <p className="text-base text-muted-foreground">{probability}% likelihood of return</p>
+                <p className="text-sm text-muted-foreground">Model confidence: {confidence}%</p>
               </CardContent>
             </Card>
 
-            {/* Key Drivers */}
+            <Card className="border-border bg-card">
+              <CardContent className="pt-6 space-y-2">
+                <h3 className="text-base font-bold text-foreground mb-3">Sustainability signal</h3>
+                <p className="text-base text-muted-foreground">
+                  Higher return risk usually means more shipping, packaging, and inventory waste. Rough impact index:{" "}
+                  <span className="font-semibold text-foreground">{wasteScore}</span> / 10 (derived from this
+                  prediction, not a third-party audit).
+                </p>
+              </CardContent>
+            </Card>
+
             <Card className="border-border bg-card">
               <CardContent className="pt-6 space-y-2">
                 <h3 className="text-base font-bold text-foreground mb-3">Key Drivers</h3>
                 <div className="space-y-3 text-base text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary" />
-                    <span>Size mismatch with your usual preference</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-secondary" />
-                    <span>Material not commonly in your wardrobe</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-accent" />
-                    <span>Price above your typical budget range</span>
-                  </div>
+                  {keyDrivers?.length ? (
+                    keyDrivers.map((text, i) => (
+                      <div key={`${text}-${i}`} className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                        <span>{text}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No standout drivers for this run.</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Right column */}
           <div className="space-y-6">
-            {/* Feedback */}
             <Card className="border-border bg-card">
               <CardContent className="pt-6 space-y-3">
                 <h3 className="text-base font-bold text-foreground">Your Feedback</h3>
@@ -73,21 +92,27 @@ const ResultsScreen = () => {
               </CardContent>
             </Card>
 
-            {/* Actions */}
             <Card className="border-border bg-card">
               <CardContent className="pt-6 space-y-3">
                 <Button className="w-full bg-primary text-primary-foreground text-xl py-6 gap-3">
                   <Save className="w-6 h-6" /> Save Result
                 </Button>
-                <Link to="/capture">
-                  <Button variant="outline" className="w-full gap-2 mt-2 text-base py-5">
+                <Button
+                  variant="outline"
+                  className="w-full gap-2 mt-2 text-base py-5"
+                  asChild
+                >
+                  <Link
+                    to="/capture"
+                    onClick={() => {
+                      resetItemFlow();
+                    }}
+                  >
                     <RefreshCw className="w-5 h-5" /> Scan Another Item
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
-
-
           </div>
         </div>
       </div>
