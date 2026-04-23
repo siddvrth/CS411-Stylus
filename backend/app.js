@@ -4,7 +4,7 @@ import {uploadItemHandler, confirmItemHandler, predictReturnRiskHandler} from ".
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: "12mb" }));
 app.get("/api/profile", getProfileHandler);
 app.post("/api/profile", createProfileHandler);
 app.post("/api/item/upload", uploadItemHandler);

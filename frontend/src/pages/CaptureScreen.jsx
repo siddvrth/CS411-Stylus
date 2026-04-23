@@ -10,6 +10,8 @@ import {
   setItemImageUrl,
 } from "@/lib/item-flow";
 
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
 const CaptureScreen = () => {
   const navigate = useNavigate();
   const fileRef = useRef(null);
@@ -17,6 +19,10 @@ const CaptureScreen = () => {
 
   const runUpload = (file) => {
     if (!file || busy) return;
+    if (file.size > MAX_IMAGE_BYTES) {
+      alert("Image must be 5 MB or smaller.");
+      return;
+    }
     setBusy(true);
     const reader = new FileReader();
     reader.onload = async () => {
