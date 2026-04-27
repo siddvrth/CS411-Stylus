@@ -10,7 +10,10 @@ export default [
     files: ["**/*.{js,jsx}"],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        __STYLUS_GEMINI_KEY__: "readonly",
+      },
     },
     plugins: {
       "react-hooks": reactHooks,
