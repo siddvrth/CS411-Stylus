@@ -50,7 +50,6 @@ const ProfileScreen = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
-    setSaved(false);
 
     const payload = {
       preferredSize,
