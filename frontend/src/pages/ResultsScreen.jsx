@@ -6,11 +6,12 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import PageLayout from "@/components/PageLayout";
-import { getLastPrediction, resetItemFlow } from "@/lib/item-flow";
+import { getLastPrediction, resetItemFlow, saveRiskHistory } from "@/lib/item-flow";
 
 const ResultsScreen = () => {
   const navigate = useNavigate();
   const [prediction, setPrediction] = useState(null);
+  const [feedback, setFeedback] = useState(null);
 
   useEffect(() => {
     const p = getLastPrediction();
@@ -20,8 +21,22 @@ const ResultsScreen = () => {
 
   if (!prediction) return null;
 
-  const { riskLevel, probability, confidence, keyDrivers } = prediction;
+  const { riskLevel, probability, confidence, keyDrivers, imageUrl } = prediction;
   const wasteScore = Math.min(10, Math.max(1, Math.round(probability / 10)));
+
+  const persist = () => {
+    saveRiskHistory({
+      timestamp: new Date().toISOString(),
+      itemDetails: prediction.itemDetails,
+      itemFeatures: prediction.itemFeatures,
+      prediction: {
+        score: prediction.score ?? probability / 100,
+        label: riskLevel,
+        probability,
+      },
+      feedback: feedback || "unsure",
+    });
+  };
 
   return (
     <PageLayout>
@@ -33,6 +48,17 @@ const ResultsScreen = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
+            {imageUrl ? (
+              <Card className="border-border bg-card">
+                <CardContent className="pt-6">
+                  <h3 className="text-base font-bold text-foreground mb-3">Item image</h3>
+                  <div className="rounded-lg border border-border overflow-hidden bg-muted aspect-square flex items-center justify-center">
+                    <img src={imageUrl} alt="" className="max-h-full max-w-full object-contain" />
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
+
             <Card className="border-border bg-card">
               <CardContent className="pt-6 text-center space-y-4">
                 <h2 className="text-xl text-foreground">Return Risk Level</h2>
@@ -79,14 +105,29 @@ const ResultsScreen = () => {
                 <h3 className="text-base font-bold text-foreground">Your Feedback</h3>
                 <p className="text-sm text-muted-foreground">How do you feel about this item?</p>
                 <div className="grid grid-cols-3 gap-3">
-                  <Button variant="outline" className="gap-2 py-5 text-base">
+                  <Button
+                    type="button"
+                    variant={feedback === "keep" ? "default" : "outline"}
+                    className="gap-2 py-5 text-base"
+                    onClick={() => setFeedback("keep")}
+                  >
                     <ThumbsUp className="w-5 h-5" /> Keep
                   </Button>
-                  <Button variant="outline" className="gap-2 py-5 text-base">
+                  <Button
+                    type="button"
+                    variant={feedback === "return" ? "default" : "outline"}
+                    className="gap-2 py-5 text-base"
+                    onClick={() => setFeedback("return")}
+                  >
                     <ThumbsDown className="w-5 h-5" /> Return
                   </Button>
-                  <Button variant="outline" className="gap-2 py-5 text-base">
-                    <HelpCircle className="w-5 h-5" /> Unsure
+                  <Button
+                    type="button"
+                    variant={feedback === "unsure" ? "default" : "outline"}
+                    className="gap-2 py-5 text-base"
+                    onClick={() => setFeedback("unsure")}
+                  >
+                    <HelpCircle className="w-5 h-5" /> Not Sure
                   </Button>
                 </div>
               </CardContent>
@@ -94,7 +135,13 @@ const ResultsScreen = () => {
 
             <Card className="border-border bg-card">
               <CardContent className="pt-6 space-y-3">
-                <Button className="w-full bg-primary text-primary-foreground text-xl py-6 gap-3">
+                <Button
+                  type="button"
+                  className="w-full bg-primary text-primary-foreground text-xl py-6 gap-3"
+                  onClick={() => {
+                    persist();
+                  }}
+                >
                   <Save className="w-6 h-6" /> Save Result
                 </Button>
                 <Button

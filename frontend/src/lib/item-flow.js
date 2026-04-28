@@ -61,6 +61,14 @@ export function postItemPredict(sessionId, userProfile) {
   return postJson("/api/item/predict", { sessionId, userProfile });
 }
 
+const RISK_HISTORY_KEY = "stylus.riskHistory";
+
+export function saveRiskHistory(entry) {
+  const list = JSON.parse(localStorage.getItem(RISK_HISTORY_KEY) || "[]");
+  list.push(entry);
+  localStorage.setItem(RISK_HISTORY_KEY, JSON.stringify(list));
+}
+
 export async function fetchLatestProfile() {
   const res = await fetch("/api/profile");
   const data = await res.json().catch(() => ({}));

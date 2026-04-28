@@ -12,9 +12,10 @@ import {
   fetchLatestProfile,
   getItemImageUrl,
   postItemConfirm,
-  postItemPredict,
   setLastPrediction,
 } from "@/lib/item-flow";
+import { analyzeItemReturnRisk } from "@/lib/gemini-analyze";
+import { normalizeGeminiAnalysis } from "@/lib/return-risk";
 
 const categories = ["Tops", "Bottoms", "Outerwear", "Dresses", "Shoes", "Accessories"];
 
@@ -64,13 +65,33 @@ const ItemDetailsScreen = () => {
     };
     if (priceNum !== undefined) itemDetails.price = priceNum;
 
+    const imageUrl = getItemImageUrl();
+    if (!imageUrl) {
+      alert("Add an item photo first.");
+      return;
+    }
+
     setBusy(true);
     try {
+      const { profile } = await fetchLatestProfile();
+      const raw = await analyzeItemReturnRisk({
+        imageInput: imageUrl,
+        userProfile: profile,
+        itemDetails,
+      });
+      const risk = normalizeGeminiAnalysis(raw);
       const sessionId = ensureItemSessionId();
       await postItemConfirm(sessionId, itemDetails);
-      const { profile } = await fetchLatestProfile();
-      const prediction = await postItemPredict(sessionId, profile);
-      setLastPrediction(prediction);
+      setLastPrediction({
+        riskLevel: risk.label,
+        score: risk.score,
+        probability: Math.round(risk.score * 100),
+        confidence: 82,
+        keyDrivers: risk.reasons,
+        imageUrl,
+        itemDetails,
+        itemFeatures: risk.itemFeatures,
+      });
       navigate("/results");
     } catch (e) {
       if (e.fieldErrors) setFieldErrors(e.fieldErrors);

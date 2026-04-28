@@ -1,3 +1,15 @@
+export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+function approximateDataUrlDecodeLength(imageUrl) {
+  if (typeof imageUrl !== "string") return 0;
+  const marker = "base64,";
+  const idx = imageUrl.indexOf(marker);
+  if (idx === -1) return imageUrl.length;
+  const b64 = imageUrl.slice(idx + marker.length);
+  const pad = b64.endsWith("==") ? 2 : b64.endsWith("=") ? 1 : 0;
+  return (b64.length * 3) / 4 - pad;
+}
+
 function normalizeText(value) {
   if (typeof value !== "string") return "";
   return value.trim();
@@ -11,6 +23,9 @@ function normalizeNumber(value) {
 export function validateUploadRequest(payload) {
   if (!payload || !payload.sessionId || !payload.imageUrl) {
     return { ok: false, message: "sessionId and imageUrl are required" };
+  }
+  if (approximateDataUrlDecodeLength(payload.imageUrl) > MAX_IMAGE_BYTES) {
+    return { ok: false, message: "Image must be 5 MB or smaller." };
   }
   return { ok: true, value: payload };
 }
