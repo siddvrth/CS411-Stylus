@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { User, Save, X } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,17 +17,17 @@ import PageLayout from "@/components/PageLayout";
 
 const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
 const fits = ["Slim", "Regular", "Relaxed", "Oversized"];
+const styleOptions = ["Casual", "Formal", "Streetwear", "Athleisure", "Bohemian", "Minimalist", "Vintage"];
 
 const ProfileScreen = () => {
   const [preferredSize, setPreferredSize] = useState("");
   const [fitPreference, setFitPreference] = useState("");
-  const [styleTags, setStyleTags] = useState("");
+  const [selectedStyles, setSelectedStyles] = useState([]);
   const [brands, setBrands] = useState([]);
   const [brandInput, setBrandInput] = useState("");
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const ProfileScreen = () => {
           const p = data.profile;
           setPreferredSize(p.preferredSize || "");
           setFitPreference(p.fitPreference || "");
-          setStyleTags((p.styleTags || []).join(", "));
+          setSelectedStyles(p.styleTags || []);
           setBrands(p.favoriteBrands || []);
           setBudgetMin(p.budgetMin != null ? String(p.budgetMin) : "");
           setBudgetMax(p.budgetMax != null ? String(p.budgetMax) : "");
@@ -54,10 +55,7 @@ const ProfileScreen = () => {
     const payload = {
       preferredSize,
       fitPreference,
-      styleTags: styleTags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean),
+      styleTags: selectedStyles,
       favoriteBrands: brands,
       budgetMin: budgetMin ? Number(budgetMin) : null,
       budgetMax: budgetMax ? Number(budgetMax) : null,
@@ -71,7 +69,9 @@ const ProfileScreen = () => {
       });
 
       if (res.ok) {
-        setSaved(true);
+        toast.success("Profile saved!");
+      } else {
+        toast.error("Failed to save profile.");
       }
     } finally {
       setSaving(false);
@@ -166,15 +166,26 @@ const ProfileScreen = () => {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="styles">Style Tags</Label>
-                <Input
-                  id="styles"
-                  placeholder="e.g. Casual, Streetwear, Minimalist"
-                  value={styleTags}
-                  onChange={(e) => setStyleTags(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Separate multiple tags with commas.
-                </p>
+                <div className="flex flex-wrap gap-2">
+                  {styleOptions.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="outline"
+                      onClick={() =>
+                        setSelectedStyles((prev) =>
+                          prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+                        )
+                      }
+                      className={`cursor-pointer transition-colors px-3 py-1.5 text-sm ${
+                        selectedStyles.includes(tag)
+                          ? "bg-primary text-primary-foreground"
+                          : "hover:bg-primary hover:text-primary-foreground"
+                      }`}
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -243,11 +254,6 @@ const ProfileScreen = () => {
               <Save className="w-5 h-5" />
               {saving ? "Saving…" : "Save Profile"}
             </Button>
-            {saved && (
-              <span className="text-sm text-green-600 font-medium">
-                Profile saved!
-              </span>
-            )}
           </div>
         </form>
         )}

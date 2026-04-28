@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import PageLayout from "@/components/PageLayout";
 import { resetItemFlow } from "@/lib/item-flow";
+import { toast } from "sonner";
 
 const styleOptions = ["Casual", "Formal", "Streetwear", "Athleisure", "Bohemian", "Minimalist", "Vintage"];
 
@@ -83,12 +84,12 @@ const OnboardingScreen = () => {
 
       if (!res.ok) {
         const err = await res.json().catch(() => null);
-        alert(err?.message || "Failed to save profile. Is the backend running?");
+        toast.error(err?.message || "Failed to save profile. Is the backend running?");
         return;
       }
 
       resetItemFlow();
-      navigate("/");
+      navigate("/capture");
     } finally {
       setSaving(false);
     }

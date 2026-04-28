@@ -1,11 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
-import { Camera, Upload, History, Settings, Home } from "lucide-react";
+import { Camera, History, Settings, Home } from "lucide-react";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/capture", label: "Capture", icon: Camera },
-  { to: "/item-details", label: "Item Details", icon: Upload },
-  { to: "/results", label: "Results", icon: History },
+  { to: "/history", label: "History", icon: History },
   { to: "/preferences", label: "Preferences", icon: Settings },
 ];
 
@@ -28,7 +27,7 @@ const Navbar = () => {
                 to={to}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-md text-base transition-colors ${
                   active
-                    ? "bg-primary/15 text-primary font-semibold"
+                    ? "bg-primary text-primary-foreground font-semibold shadow-sm"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >

@@ -2,10 +2,21 @@ const SESSION_ID_KEY = "stylus.itemSessionId";
 const IMAGE_URL_KEY = "stylus.itemImageUrl";
 const PREDICTION_KEY = "stylus.lastPrediction";
 
+function generateUUID() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  // Fallback for non-secure contexts (HTTP on LAN IP, etc.)
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
 export function ensureItemSessionId() {
   let id = sessionStorage.getItem(SESSION_ID_KEY);
   if (!id) {
-    id = crypto.randomUUID();
+    id = generateUUID();
     sessionStorage.setItem(SESSION_ID_KEY, id);
   }
   return id;
@@ -61,12 +72,24 @@ export function postItemPredict(sessionId, userProfile) {
   return postJson("/api/item/predict", { sessionId, userProfile });
 }
 
+export function postFeedback(sessionId, feedback) {
+  return postJson("/api/item/feedback", { sessionId, feedback });
+}
+
 const RISK_HISTORY_KEY = "stylus.riskHistory";
 
 export function saveRiskHistory(entry) {
   const list = JSON.parse(localStorage.getItem(RISK_HISTORY_KEY) || "[]");
   list.push(entry);
   localStorage.setItem(RISK_HISTORY_KEY, JSON.stringify(list));
+}
+
+export function getRiskHistory() {
+  return JSON.parse(localStorage.getItem(RISK_HISTORY_KEY) || "[]");
+}
+
+export function clearRiskHistory() {
+  localStorage.removeItem(RISK_HISTORY_KEY);
 }
 
 export async function fetchLatestProfile() {

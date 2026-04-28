@@ -16,6 +16,7 @@ import {
 } from "@/lib/item-flow";
 import { analyzeItemReturnRisk } from "@/lib/gemini-analyze";
 import { normalizeGeminiAnalysis } from "@/lib/return-risk";
+import { toast } from "sonner";
 
 const categories = ["Tops", "Bottoms", "Outerwear", "Dresses", "Shoes", "Accessories"];
 
@@ -95,7 +96,7 @@ const ItemDetailsScreen = () => {
       navigate("/results");
     } catch (e) {
       if (e.fieldErrors) setFieldErrors(e.fieldErrors);
-      else alert(e.message || "Could not analyze this item.");
+      else toast.error(e.message || "Could not analyze this item.");
     } finally {
       setBusy(false);
     }
