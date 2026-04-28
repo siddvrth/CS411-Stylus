@@ -88,6 +88,11 @@ export function getRiskHistory() {
   return JSON.parse(localStorage.getItem(RISK_HISTORY_KEY) || "[]");
 }
 
+export function getRecentRiskHistory(n = 5) {
+  const list = getRiskHistory();
+  return list.slice(-n);
+}
+
 export function clearRiskHistory() {
   localStorage.removeItem(RISK_HISTORY_KEY);
 }

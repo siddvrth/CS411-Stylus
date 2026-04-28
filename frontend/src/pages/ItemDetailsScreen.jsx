@@ -11,6 +11,7 @@ import {
   ensureItemSessionId,
   fetchLatestProfile,
   getItemImageUrl,
+  getRecentRiskHistory,
   postItemConfirm,
   setLastPrediction,
 } from "@/lib/item-flow";
@@ -79,6 +80,7 @@ const ItemDetailsScreen = () => {
         imageInput: imageUrl,
         userProfile: profile,
         itemDetails,
+        recentSavedChecks: getRecentRiskHistory(5),
       });
       const risk = normalizeGeminiAnalysis(raw);
       const sessionId = ensureItemSessionId();
