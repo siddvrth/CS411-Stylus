@@ -38,5 +38,7 @@ export function predictReturnRiskHandler(req, res) {
   if (!itemData) return res.status(400).json({ message: "Item details not found for session" });
 
   const prediction = predictReturnRisk(userProfile, itemData);
+  if (!sessionStore[sessionId]) sessionStore[sessionId] = {};
+  sessionStore[sessionId].prediction = prediction; 
   res.status(200).json(prediction);
 }
